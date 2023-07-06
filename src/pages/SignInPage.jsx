@@ -1,12 +1,14 @@
 import styled from "styled-components"
 import { Link, useNavigate } from "react-router-dom"
 import MyWalletLogo from "../components/MyWalletLogo"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import axios from "axios"
+import DataContextProvider from "../context/DataContextProvider"
 
 export default function SignInPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const { setToken } = useContext(DataContextProvider)
   const [isDisable, setIsDisable] = useState("")
 
   const navigate = useNavigate()
@@ -19,13 +21,18 @@ export default function SignInPage() {
       email: email,
       password: password
     }
+    console.log("dados", sendDatasToAPi)
 
-    const promisse = axios.post(`htto://localhost:3000/usuario`, sendDatasToAPi)
+    const promisse = axios.post(`http://localhost:5000/sign-in`, sendDatasToAPi)
+    console.log(promisse);
     promisse.then(res => {
+      setToken(res.data.token)
       navigate(`/home`)
     })
-    promisse.catch(err => {
-      alert(err.response.data.message)
+    promisse.catch((res) => {
+      console.log(res);
+      alert(res.response.data)
+      setIsDisable(false)
     })
   }
 
@@ -47,7 +54,7 @@ export default function SignInPage() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          autocomplete="new-password"
+          autoComplete="new-password"
           required
           disabled={isDisable}
         />
