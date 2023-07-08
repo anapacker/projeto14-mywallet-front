@@ -21,12 +21,10 @@ export default function SignInPage() {
       email: email,
       password: password
     }
-    console.log("dados", sendDatasToAPi)
 
     const promisse = axios.post(`${import.meta.env.VITE_API_URL}/sign-in`, sendDatasToAPi)
-    console.log(promisse);
     promisse.then(res => {
-      localStorage.setItem(`${import.meta.env.CHAVE_SECRETA_LOCAL_STORAGE}`, res.data.token)
+      localStorage.setItem("token", res.data.token)
       setToken(res.data.token)
       navigate(`/home`)
     })
