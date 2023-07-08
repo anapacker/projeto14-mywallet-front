@@ -9,6 +9,7 @@ export default function SignUpPage() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
   const [isDisable, setIsDisable] = useState("")
   const navigate = useNavigate()
 
@@ -17,10 +18,21 @@ export default function SignUpPage() {
 
     return isValid.test(email)
   }
+  function validarSenha() {
+    if (password != confirmPassword) {
+      alert(`As senhas tem que ser iguais`)
+    }
+
+    if (password.length < 3) {
+      alert(`A senha deve ter no mínimo 3 caracteres.`)
+      return
+    }
+  }
 
   function userRegister(e) {
     e.preventDefault()
     setIsDisable(true)
+    validarSenha()
 
     if (!validarEmail(email)) {
       alert(`Este e-mail não é válido.`)
@@ -37,11 +49,7 @@ export default function SignUpPage() {
       return
     }
 
-    if (password.length < 3) {
-      alert(`A senha deve ter no mínimo 3 caracteres.`)
-      return
-    }
-    const promise = axios.post(`http://localhost:5000/sign-up`, dataToSendAPI)
+    const promise = axios.post(`${import.meta.env.VITE_API_URL}/sign-up`, dataToSendAPI)
     promise.then(() => {
       navigate("/")
     })
@@ -53,7 +61,7 @@ export default function SignUpPage() {
 
   return (
     <SingUpContainer>
-      <form onSubmit={dataToSendAPI}>
+      <form onSubmit={userRegister}>
         <MyWalletLogo />
         <input
           placeholder="Nome"
@@ -84,8 +92,8 @@ export default function SignUpPage() {
           placeholder="Confirme a senha"
           type="password"
           autocomplete="new-password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
+          value={confirmPassword}
+          onChange={e => setConfirmPassword(e.target.value)}
           required
           disabled={isDisable}
         />
