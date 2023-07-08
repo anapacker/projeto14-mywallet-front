@@ -26,12 +26,17 @@ export default function SignInPage() {
     const promisse = axios.post(`${import.meta.env.VITE_API_URL}/sign-in`, sendDatasToAPi)
     console.log(promisse);
     promisse.then(res => {
+      localStorage.setItem(`${import.meta.env.CHAVE_SECRETA_LOCAL_STORAGE}`, res.data.token)
       setToken(res.data.token)
       navigate(`/home`)
     })
     promisse.catch((res) => {
       console.log(res);
-      alert(res.response.data)
+      if (res.response.status === 401) {
+        alert(`Senha inválida`)
+      } else {
+        alert(res.response.data)
+      }
       setIsDisable(false)
     })
   }
@@ -47,6 +52,7 @@ export default function SignInPage() {
           onChange={(e) => setEmail(e.target.value)}
           required
           disabled={isDisable}
+          data-test="email"
         />
 
         <input
@@ -57,9 +63,10 @@ export default function SignInPage() {
           autoComplete="new-password"
           required
           disabled={isDisable}
+          data-test="password"
         />
 
-        <button type="submit" disabled={isDisable}>{!isDisable ? 'Entrar' : isDisable}</button>
+        <button data-test="sign-in-submit" type="submit" disabled={isDisable}>Entrar</button>
       </form>
 
       <Link to="/cadastro">

@@ -21,21 +21,28 @@ export default function SignUpPage() {
   function validarSenha() {
     if (password != confirmPassword) {
       alert(`As senhas tem que ser iguais`)
+      return false
     }
 
     if (password.length < 3) {
       alert(`A senha deve ter no mínimo 3 caracteres.`)
-      return
+      return false
     }
+    return true
   }
 
   function userRegister(e) {
     e.preventDefault()
     setIsDisable(true)
-    validarSenha()
+
 
     if (!validarEmail(email)) {
       alert(`Este e-mail não é válido.`)
+      setIsDisable(false)
+      return
+    }
+    if (!validarSenha()) {
+      setIsDisable(false)
       return
     }
 
@@ -70,6 +77,7 @@ export default function SignUpPage() {
           onChange={e => setName(e.target.value)}
           required
           disabled={isDisable}
+          data-test="name"
         />
         <input
           placeholder="E-mail"
@@ -78,27 +86,30 @@ export default function SignUpPage() {
           onChange={e => setEmail(e.target.value)}
           required
           disabled={isDisable}
+          data-test="email"
         />
         <input
           placeholder="Senha"
           type="password"
-          autocomplete="new-password"
+          autoComplete="new-password"
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
           disabled={isDisable}
+          data-test="password"
         />
         <input
           placeholder="Confirme a senha"
           type="password"
-          autocomplete="new-password"
+          autoComplete="new-password"
           value={confirmPassword}
           onChange={e => setConfirmPassword(e.target.value)}
           required
           disabled={isDisable}
+          data-test="conf-password"
         />
 
-        <button type="submit" disabled={isDisable}>Cadastrar</button>
+        <button data-test="sign-up-submit" type="submit" disabled={isDisable}>Cadastrar</button>
       </form>
 
       <Link to="/">

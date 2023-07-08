@@ -8,7 +8,7 @@ import DataContextProvider from "./context/DataContextProvider"
 import { useState } from "react"
 
 export default function App() {
-  const [token, setToken] = useState("")
+  const [token, setToken] = useState(localStorage.getItem(`${import.meta.env.CHAVE_SECRETA_LOCAL_STORAGE}`))
   const contextValue = { token, setToken }
 
   return (
