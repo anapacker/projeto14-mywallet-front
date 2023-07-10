@@ -1,9 +1,44 @@
 import styled from "styled-components"
 import { BiExit } from "react-icons/bi"
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai"
+import { Link } from "react-router-dom"
+import { useContext, useEffect, useState } from "react"
+import axios from "axios"
+import DataContextProvider from "../context/DataContextProvider"
 
 
 export default function HomePage() {
+  const [transacs, setTransacs] = useState([])
+  const { token } = useContext(DataContextProvider)
+
+  useEffect(() => {
+    getTransacList()
+  }, [])
+
+
+  function getTransacList() {
+    const config = {
+      headers: { "Authorization": `Bearer ${token}` }
+    }
+
+    const promise = axios.get(`${import.meta.env.VITE_API_URL}/transacoes`, config)
+    promise.then((res) => {
+      setTransacs(res.data)
+      console.log(res.data)
+    })
+    promise.catch((err) => {
+      console.log(err.response.data)
+    })
+  }
+
+  function renderValor(valor) {
+    if (valor < 0) {
+      return (valor * -1).toFixed(2).replace(".", ",")
+    }
+    return valor.toFixed(2).replace(".", ",")
+
+  }
+
   return (
     <HomeContainer>
       <Header>
@@ -13,21 +48,19 @@ export default function HomePage() {
 
       <TransactionsContainer>
         <ul>
-          <ListItemContainer>
-            <div>
-              <span>30/11</span>
-              <strong>Almoço mãe</strong>
-            </div>
-            <Value color={"negativo"}>120,00</Value>
-          </ListItemContainer>
+          {transacs.map((transaction) => {
+            return (
+              <ListItemContainer key={transaction._id}>
+                <div>
+                  <span>{transaction.data}</span>
+                  <strong>{transaction.descricao}</strong>
+                </div>
+                <Value color={transaction.valor < 0 ? "negativo" : "positivo"}>{renderValor(transaction.valor)}</Value>
+              </ListItemContainer>
+            )
 
-          <ListItemContainer>
-            <div>
-              <span>15/11</span>
-              <strong>Salário</strong>
-            </div>
-            <Value color={"positivo"}>3000,00</Value>
-          </ListItemContainer>
+          })}
+
         </ul>
 
         <article>
@@ -39,13 +72,18 @@ export default function HomePage() {
 
       <ButtonsContainer>
         <button>
-          <AiOutlinePlusCircle />
-          <p>Nova <br /> entrada</p>
+          <Link to={"/nova-transacao/entrada"}>
+            <AiOutlinePlusCircle />
+            <p>Nova <br /> entrada</p>
+          </Link>
         </button>
         <button>
-          <AiOutlineMinusCircle />
-          <p>Nova <br />saída</p>
+          <Link to={"/nova-transacao/saida"}>
+            <AiOutlineMinusCircle />
+            <p>Nova <br />saída</p>
+          </Link>
         </button>
+
       </ButtonsContainer>
 
     </HomeContainer>

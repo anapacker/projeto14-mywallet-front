@@ -45,7 +45,7 @@ export default function TransactionsPage() {
       <form>
         <input
           placeholder="Valor"
-          type="text"
+          type="number"
           value={valor}
           onChange={e => setValor(e.target.value)}
           required
