@@ -52,7 +52,7 @@ export default function HomePage() {
             return (
               <ListItemContainer key={transaction._id}>
                 <div>
-                  <span>{transaction.data}</span>
+                  <span>{transaction.date}</span>
                   <strong>{transaction.descricao}</strong>
                 </div>
                 <Value color={transaction.valor < 0 ? "negativo" : "positivo"}>{renderValor(transaction.valor)}</Value>
@@ -113,6 +113,10 @@ const TransactionsContainer = styled.article`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  ul{
+    height: calc(100vh - 115px - 46px - 18px - 15px - 32px - 75px);
+    overflow-y: auto;
+  }
   article {
     display: flex;
     justify-content: space-between;   
