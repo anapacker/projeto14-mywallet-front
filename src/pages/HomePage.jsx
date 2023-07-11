@@ -58,6 +58,7 @@ export default function HomePage() {
   }
 
   function logout() {
+    axios.delete(`${import.meta.env.VITE_API_URL}/logout`, header)
     localStorage.removeItem("token")
     setToken(null)
     navigate("/")
