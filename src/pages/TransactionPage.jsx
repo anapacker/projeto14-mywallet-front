@@ -28,10 +28,11 @@ export default function TransactionsPage() {
     }
 
     let valueToSendAPI = {
-      valor: parseInt(valor),
+      valor: parseFloat(valor),
       descricao
     }
-    if (parseInt(valor) < 1) {
+
+    if (parseFloat(valor) < 0) {
       alert(`Valor inválido`)
       return
     }
