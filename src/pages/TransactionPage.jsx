@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import styled from "styled-components"
 import DataContextProvider from "../context/DataContextProvider"
@@ -11,6 +11,14 @@ export default function TransactionsPage() {
   const { token } = useContext(DataContextProvider)
   const navigate = useNavigate()
 
+  function verificarTokenDeAcesso() {
+    if (!token) {
+      navigate("/")
+    }
+  }
+  verificarTokenDeAcesso()
+
+  useEffect(verificarTokenDeAcesso, [])
 
   function saveNewTransac(e) {
     e.preventDefault()
@@ -37,6 +45,9 @@ export default function TransactionsPage() {
     })
     promise.catch((res) => {
       alert(`${res.response.data}`)
+      if (err.response.status === 401) {
+        navigate("/")
+      }
     })
   }
   return (
@@ -48,6 +59,7 @@ export default function TransactionsPage() {
           type="number"
           value={valor}
           onChange={e => setValor(e.target.value)}
+          data-test="registry-amount-input"
           required
         />
         <input
@@ -55,9 +67,10 @@ export default function TransactionsPage() {
           type="text"
           value={descricao}
           onChange={e => setDescricao(e.target.value)}
+          data-test="registry-name-input"
           required
         />
-        <button onClick={saveNewTransac}>Salvar {tipo}</button>
+        <button data-test="registry-save" onClick={saveNewTransac}>Salvar {tipo}</button>
       </form>
     </TransactionsContainer>
   )

@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { BiExit } from "react-icons/bi"
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useContext, useEffect, useState } from "react"
 import axios from "axios"
 import DataContextProvider from "../context/DataContextProvider"
@@ -12,8 +12,16 @@ export default function HomePage() {
   const [total, setTotal] = useState(0)
   const [transacs, setTransacs] = useState([])
   const { token } = useContext(DataContextProvider)
+  const navigate = useNavigate()
+
+  function verificarTokenDeAcesso() {
+    if (!token) {
+      navigate("/")
+    }
+  }
 
   useEffect(() => {
+    verificarTokenDeAcesso()
     getTransacList()
     getUsername()
   }, [])
@@ -29,7 +37,9 @@ export default function HomePage() {
       console.log(res.data)
     })
     promise.catch((err) => {
-      console.log(err.response.data);
+      if (err.response.status === 401) {
+        navigate("/")
+      }
     })
   }
 
@@ -41,7 +51,9 @@ export default function HomePage() {
       console.log(res.data)
     })
     promise.catch((err) => {
-      console.log(err.response.data)
+      if (err.response.status === 401) {
+        navigate("/")
+      }
     })
   }
 
@@ -56,7 +68,7 @@ export default function HomePage() {
   return (
     <HomeContainer>
       <Header>
-        <h1>Olá, {name}</h1>
+        <h1 data-test="user-name">Olá, {name}</h1>
         <BiExit />
       </Header>
 
@@ -65,11 +77,11 @@ export default function HomePage() {
           {transacs.map((transaction) => {
             return (
               <ListItemContainer key={transaction._id}>
-                <div>
+                <div data-test="registry-name">
                   <span>{transaction.date}</span>
                   <strong>{transaction.descricao}</strong>
                 </div>
-                <Value color={transaction.valor < 0 ? "negativo" : "positivo"}>{renderValor(transaction.valor)}</Value>
+                <Value data-test="registry-amount" color={transaction.valor < 0 ? "negativo" : "positivo"}>{renderValor(transaction.valor)}</Value>
               </ListItemContainer>
             )
 
@@ -79,19 +91,19 @@ export default function HomePage() {
 
         <article>
           <strong>Saldo</strong>
-          <Value color={total < 0 ? "negativo" : "positivo"}>{renderValor(total)}</Value>
+          <Value data-test="total-amount" color={total < 0 ? "negativo" : "positivo"}>{renderValor(total)}</Value>
         </article>
       </TransactionsContainer>
 
 
       <ButtonsContainer>
-        <button>
+        <button data-test="new-income">
           <Link to={"/nova-transacao/entrada"}>
             <AiOutlinePlusCircle />
             <p>Nova <br /> entrada</p>
           </Link>
         </button>
-        <button>
+        <button data-test="new-expense">
           <Link to={"/nova-transacao/saida"}>
             <AiOutlineMinusCircle />
             <p>Nova <br />saída</p>
