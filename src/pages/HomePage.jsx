@@ -69,7 +69,9 @@ export default function HomePage() {
     <HomeContainer>
       <Header>
         <h1 data-test="user-name">Olá, {name}</h1>
-        <BiExit />
+        <div data-test="logout">
+          <BiExit />
+        </div>
       </Header>
 
       <TransactionsContainer>
@@ -97,17 +99,14 @@ export default function HomePage() {
 
 
       <ButtonsContainer>
-        <button data-test="new-income">
-          <Link to={"/nova-transacao/entrada"}>
-            <AiOutlinePlusCircle />
-            <p>Nova <br /> entrada</p>
-          </Link>
+        <button data-test="new-income" onClick={() => navigate("/nova-transacao/entrada")}>
+          <AiOutlinePlusCircle />
+          <p>Nova <br /> entrada</p>
+
         </button>
-        <button data-test="new-expense">
-          <Link to={"/nova-transacao/saida"}>
-            <AiOutlineMinusCircle />
-            <p>Nova <br />saída</p>
-          </Link>
+        <button data-test="new-expense" onClick={() => navigate("/nova-transacao/saida")}>
+          <AiOutlineMinusCircle />
+          <p>Nova <br />saída</p>
         </button>
 
       </ButtonsContainer>
