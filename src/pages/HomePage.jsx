@@ -11,7 +11,7 @@ export default function HomePage() {
   const [name, setName] = useState("")
   const [total, setTotal] = useState(0)
   const [transacs, setTransacs] = useState([])
-  const { token } = useContext(DataContextProvider)
+  const { setToken, token } = useContext(DataContextProvider)
   const navigate = useNavigate()
 
   function verificarTokenDeAcesso() {
@@ -57,6 +57,12 @@ export default function HomePage() {
     })
   }
 
+  function logout() {
+    localStorage.removeItem("token")
+    setToken(null)
+    navigate("/")
+  }
+
   function renderValor(valor) {
     if (valor < 0) {
       return (valor * -1).toFixed(2).replace(".", ",")
@@ -69,7 +75,7 @@ export default function HomePage() {
     <HomeContainer>
       <Header>
         <h1 data-test="user-name">Olá, {name}</h1>
-        <div data-test="logout">
+        <div data-test="logout" onClick={logout}>
           <BiExit />
         </div>
       </Header>
@@ -79,9 +85,9 @@ export default function HomePage() {
           {transacs.map((transaction) => {
             return (
               <ListItemContainer key={transaction._id}>
-                <div data-test="registry-name">
+                <div>
                   <span>{transaction.date}</span>
-                  <strong>{transaction.descricao}</strong>
+                  <strong data-test="registry-name">{transaction.descricao}</strong>
                 </div>
                 <Value data-test="registry-amount" color={transaction.valor < 0 ? "negativo" : "positivo"}>{renderValor(transaction.valor)}</Value>
               </ListItemContainer>
