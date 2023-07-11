@@ -8,6 +8,7 @@ import DataContextProvider from "../context/DataContextProvider"
 
 
 export default function HomePage() {
+  const [total, setTotal] = useState(0)
   const [transacs, setTransacs] = useState([])
   const { token } = useContext(DataContextProvider)
 
@@ -23,7 +24,8 @@ export default function HomePage() {
 
     const promise = axios.get(`${import.meta.env.VITE_API_URL}/transacoes`, config)
     promise.then((res) => {
-      setTransacs(res.data)
+      setTransacs(res.data.transacs)
+      setTotal(res.data.total)
       console.log(res.data)
     })
     promise.catch((err) => {
@@ -65,7 +67,7 @@ export default function HomePage() {
 
         <article>
           <strong>Saldo</strong>
-          <Value color={"positivo"}>2880,00</Value>
+          <Value color={total < 0 ? "negativo" : "positivo"}>{renderValor(total)}</Value>
         </article>
       </TransactionsContainer>
 
