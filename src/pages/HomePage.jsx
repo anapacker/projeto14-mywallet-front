@@ -8,21 +8,33 @@ import DataContextProvider from "../context/DataContextProvider"
 
 
 export default function HomePage() {
+  const [name, setName] = useState("")
   const [total, setTotal] = useState(0)
   const [transacs, setTransacs] = useState([])
   const { token } = useContext(DataContextProvider)
 
   useEffect(() => {
     getTransacList()
+    getUsername()
   }, [])
 
+  const header = {
+    headers: { "Authorization": `Bearer ${token}` }
+  }
+
+  function getUsername() {
+    const promise = axios.get(`${import.meta.env.VITE_API_URL}/sign-in`, header)
+    promise.then((res) => {
+      setName(res.data.name)
+      console.log(res.data)
+    })
+    promise.catch((err) => {
+      console.log(err.response.data);
+    })
+  }
 
   function getTransacList() {
-    const config = {
-      headers: { "Authorization": `Bearer ${token}` }
-    }
-
-    const promise = axios.get(`${import.meta.env.VITE_API_URL}/transacoes`, config)
+    const promise = axios.get(`${import.meta.env.VITE_API_URL}/transacoes`, header)
     promise.then((res) => {
       setTransacs(res.data.transacs)
       setTotal(res.data.total)
@@ -44,7 +56,7 @@ export default function HomePage() {
   return (
     <HomeContainer>
       <Header>
-        <h1>Olá, Fulano</h1>
+        <h1>Olá, {name}</h1>
         <BiExit />
       </Header>
 
